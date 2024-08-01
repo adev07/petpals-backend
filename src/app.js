@@ -10,9 +10,9 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import indexRouter from "./routes/index.js";
 
 const app = express();
+app.use(cors());
 const httpServer = createServer(app);
 
-app.use(cors());
 
 /*
 `requestIp.mw()` is middleware that attaches the IP address of the client to the `req` object as `req.clientIp`. 
