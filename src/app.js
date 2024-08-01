@@ -62,7 +62,7 @@ app.use(morganMiddleware);
 //routes declaration
 app.use("/api/v1", indexRouter);
 app.get("/dummy", async(req, res)=>{
-    return res.send("dummy");
+    return res.json({data:"dummy"});
 })
 
 // common error handling middleware
