@@ -60,7 +60,7 @@ app.use(cookieParser());
 app.use(morganMiddleware);
 
 //routes declaration
-// app.use("/api/v1", indexRouter);
+app.use("/api/v1", indexRouter);
 app.get("/dummy", async(req, res)=>{
     return res.json({data:"dummy"});
 })
