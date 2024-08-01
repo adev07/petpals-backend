@@ -11,8 +11,8 @@ import indexRouter from "./routes/index.js";
 
 const app = express();
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://petpals-backend.vercel.app"],
-  optionsSuccessStatus: 200, 
+  origin: ["http://localhost:3000", "https://petpals-frontend.vercel.app"],
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
