@@ -10,9 +10,14 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import indexRouter from "./routes/index.js";
 
 const app = express();
-app.use(cors());
-const httpServer = createServer(app);
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://petpals-backend.vercel.app"],
+  optionsSuccessStatus: 200, // For legacy browser support
+};
 
+app.use(cors(corsOptions));
+
+const httpServer = createServer(app);
 
 /*
 `requestIp.mw()` is middleware that attaches the IP address of the client to the `req` object as `req.clientIp`. 
@@ -21,20 +26,21 @@ app.use(requestIp.mw());
 
 // Rate limiter to avoid misuse of the service and avoid cost spikes
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500, // Limit each IP to 500 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    keyGenerator: (req, res) => {
-        return req.clientIp; // IP address from requestIp.mw(), as opposed to req.ip
-    },
-    handler: (_, __, ___, options) => {
-        throw new ApiError(
-            options.statusCode || 500,
-            `There are too many requests. You are only allowed ${options.max
-            } requests per ${options.windowMs / 60000} minutes`
-        );
-    },
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500, // Limit each IP to 500 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  keyGenerator: (req, res) => {
+    return req.clientIp; // IP address from requestIp.mw(), as opposed to req.ip
+  },
+  handler: (_, __, ___, options) => {
+    throw new ApiError(
+      options.statusCode || 500,
+      `There are too many requests. You are only allowed ${
+        options.max
+      } requests per ${options.windowMs / 60000} minutes`
+    );
+  },
 });
 
 // Apply the rate limiting middleware to all requests
@@ -61,9 +67,9 @@ app.use(morganMiddleware);
 
 //routes declaration
 app.use("/api/v1", indexRouter);
-app.get("/dummy", async(req, res)=>{
-    return res.json({data:"dummy"});
-})
+app.get("/dummy", async (req, res) => {
+  return res.json({ data: "dummy" });
+});
 
 // common error handling middleware
 app.use(errorHandler);
